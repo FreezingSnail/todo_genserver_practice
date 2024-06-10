@@ -1,12 +1,12 @@
 defmodule TodoServerTest do
   use ExUnit.Case
-  doctest TodoServer
+  doctest Todo.Server
 
   test Get do
-    {:ok, pid} = TodoServer.start()
-    TodoServer.put(pid, %{date: "2021-01-01", description: "Buy milk"})
-    TodoServer.put(pid, %{date: "2021-01-01", description: "Buy eggs"})
-    entries = TodoServer.get(pid, "2021-01-01")
+    {:ok, pid} = Todo.Server.start("bob")
+    Todo.Server.put(pid, %{date: "2021-01-01", description: "Buy milk"})
+    Todo.Server.put(pid, %{date: "2021-01-01", description: "Buy eggs"})
+    entries = Todo.Server.get(pid, "2021-01-01")
 
     assert entries == [
              %{date: "2021-01-01", description: "Buy milk", id: 1},

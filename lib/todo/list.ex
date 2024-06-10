@@ -1,7 +1,7 @@
-defmodule TodoList do
+defmodule Todo.List do
   defstruct next_id: 1, entries: %{}
 
-  def new(), do: %TodoList{}
+  def new(), do: %Todo.List{}
 
   def add_entry(todo_list, entry) do
     entry = Map.put(entry, :id, todo_list.next_id)
@@ -13,7 +13,7 @@ defmodule TodoList do
         entry
       )
 
-    %TodoList{todo_list | next_id: todo_list.next_id + 1, entries: new_entries}
+    %Todo.List{todo_list | next_id: todo_list.next_id + 1, entries: new_entries}
   end
 
   def entries(todo_list, date) do
@@ -27,7 +27,7 @@ defmodule TodoList do
       {:ok, entry} ->
         updated_entry = updater_func.(entry)
         new_entries = Map.put(todo_list.entries, entry_id, updated_entry)
-        %TodoList{todo_list | entries: new_entries}
+        %Todo.List{todo_list | entries: new_entries}
 
       :error ->
         todo_list
@@ -36,6 +36,6 @@ defmodule TodoList do
 
   def delete_entry(todo_list, entry_id) do
     new_entries = Map.delete(todo_list.entries, entry_id)
-    %TodoList{todo_list | entries: new_entries}
+    %Todo.List{todo_list | entries: new_entries}
   end
 end
