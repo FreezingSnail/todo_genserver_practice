@@ -1,6 +1,8 @@
 defmodule Todo.Cache do
+  require Logger
+
   def start_link() do
-    IO.puts("starting Cache")
+    Logger.info("starting Cache")
     DynamicSupervisor.start_link(name: __MODULE__, stategy: :one_for_one)
   end
 

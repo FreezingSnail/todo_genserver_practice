@@ -15,27 +15,29 @@ defmodule Todo.Database do
   end
 
   def child_spec(_) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, []},
-      type: :supervisor
-    }
+    File.mkdir_p!(@db_folder)
+
+    :poolboy.child_spec(
+      __MODULE__,
+      [
+        name: {:local, __MODULE__},
+        worker_module: Todo.DatabaseWorker,
+        size: 3
+      ],
+      [@db_folder]
+    )
   end
 
   def store(key, data) do
-    key
-    |> chose_worker()
-    |> Todo.DatabaseWorker.store(key, data)
+    :poolboy.transaction(__MODULE__, fn pid ->
+      Todo.DatabaseWorker.store(pid, key, data)
+    end)
   end
 
   def get(key) do
-    key
-    |> chose_worker()
-    |> Todo.DatabaseWorker.get(key)
-  end
-
-  def chose_worker(key) do
-    :erlang.phash2(key, @pool_size) + 1
+    :poolboy.transaction(__MODULE__, fn pid ->
+      Todo.DatabaseWorker.get(pid, key)
+    end)
   end
 
   def file_name(key) do
