@@ -9,7 +9,7 @@ defmodule Todo.Web do
       scheme: :http,
       plug: __MODULE__,
       options: [
-        port: 5454
+        port: Application.fetch_env!(:todo_practice, :http_port)
       ]
     )
   end
